@@ -11,10 +11,28 @@
 <div class="container">
     <h1 class="mt-5 mb-3">Notenerfassung</h1>
     <?php
-    print_r($_POST);
+    require "lib/func.php";
+
+    $name = '';
+    $email = '';
+    $examDate= '';
+    $grade = '';
+    $subject = '';
+
+   // print_r($_POST);
 
     if (isset($_POST['submit'])){
+        $name = isset($_POST['name']) ? $_POST['name'] : '';
+        $email = isset($_POST['email']) ? $_POST['email'] : '';
+        $examDate = isset($_POST['examDate']) ? $_POST['examDate'] : '';
+        $grade = isset($_POST['grade']) ? $_POST['grade'] : '';
+        $subject = isset($_POST['subject']) ? $_POST['subject'] : '';
 
+        if (validate($name, $email, $examDate, $subject, $grade)) {
+            echo "<p class='alert alert-success'>Die eingegebenen Daten sind in Ordnung!<p>";
+        }else{
+            echo "<p class='alert alert-danger'>Die eingegebenen Daten sind fehlerhaft!<p>";
+        }
     }
 
     ?>
@@ -24,12 +42,14 @@
                 <label for="name">Name*</label>
                 <input type="text" name="name" class="form-control"
                 maxlength="20"
+                       value="<?= htmlspecialchars($name) ?>"
                 required>
             </div>
 
             <div class="col-sm-6 form-group">
                 <label for="email">Email</label>
-                <input type="email" name="email" class="form-control">
+                <input type="email" name="email" class="form-control"
+                       value="<?= htmlspecialchars($email) ?>">
             </div>
         </div>
 
@@ -38,20 +58,25 @@
                 <label for="subject">Fach*</label>
                 <select name="subject" class="form-select"
                 required>
-                    <option>Mathematik</option>
-                    <option>Deutsch</option>
-                    <option>Englisch</option>
+                    <option value="" hidden>-Fach auswählen-</option>
+                    <option value="m" <?= $subject == 'm' ? 'selected' : '' ?>>Mathematik</option>
+                    <option value="d" <?= $subject == 'd' ? 'selected' : '' ?>>Deutsch</option>
+                    <option value="e" <?= $subject == 'e' ? 'selected' : '' ?>>Englisch</option>
+
+
                 </select>
             </div>
 
             <div class="col-sm-4 form-group">
                 <label for="grade">Note*</label>
-                <input type="number" name="grade" class="form-control" min="1" max="5"/>
+                <input type="number" name="grade" class="form-control" min="1" max="5"
+                       value="<?= htmlspecialchars($grade) ?>"/>
             </div>
 
             <div class="col-sm-4 form-group">
                 <label for="examDate">Prüfungsdatum</label>
-                <input type="date" name="examDate" class="form-control" required
+                <input type="date" name="examDate"
+                       value="<?= htmlspecialchars($examDate) ?>"class="form-control" required
                 onchange="validateExamDate(this)"/>
             </div>
         </div>
