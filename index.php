@@ -10,7 +10,14 @@
 <body>
 <div class="container">
     <h1 class="mt-5 mb-3">Notenerfassung</h1>
+    <?php
+    print_r($_POST);
 
+    if (isset($_POST['submit'])){
+
+    }
+
+    ?>
     <form id="form_grade" action="index.php" method="post">
         <div class="row">
             <div class="col-sm-6 form-group">
@@ -44,7 +51,8 @@
 
             <div class="col-sm-4 form-group">
                 <label for="examDate">Prüfungsdatum</label>
-                <input type="date" name="examDate" class="form-control" required/>
+                <input type="date" name="examDate" class="form-control" required
+                onchange="validateExamDate(this)"/>
             </div>
         </div>
 
@@ -59,5 +67,6 @@
         </div>
     </form>
 </div>
+<script src="js/index.js"></script>
 </body>
 </html>
