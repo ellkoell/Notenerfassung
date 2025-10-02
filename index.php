@@ -9,14 +9,15 @@
 </head>
 <body>
 <div class="container">
-    <h1 class="mt-5 mb-3">Notenerfassung!</h1>
+    <h1 class="mt-5 mb-3">Notenerfassung</h1>
 
     <form id="form_grade" action="index.php" method="post">
         <div class="row">
             <div class="col-sm-6 form-group">
                 <label for="name">Name*</label>
                 <input type="text" name="name" class="form-control"
-                maxlength="">
+                maxlength="20"
+                required>
             </div>
 
             <div class="col-sm-6 form-group">
@@ -28,7 +29,8 @@
         <div class="row">
             <div class="col-sm-4 form-group">
                 <label for="subject">Fach*</label>
-                <select name="subject" class="form-select">
+                <select name="subject" class="form-select"
+                required>
                     <option>Mathematik</option>
                     <option>Deutsch</option>
                     <option>Englisch</option>
@@ -37,12 +39,12 @@
 
             <div class="col-sm-4 form-group">
                 <label for="grade">Note*</label>
-                <input type="number" name="grade" class="form-control"/>
+                <input type="number" name="grade" class="form-control" min="1" max="5"/>
             </div>
 
             <div class="col-sm-4 form-group">
                 <label for="examDate">Prüfungsdatum</label>
-                <input type="date" name="examDate" class="form-control"/>
+                <input type="date" name="examDate" class="form-control" required/>
             </div>
         </div>
 
