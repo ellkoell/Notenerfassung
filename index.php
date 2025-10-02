@@ -30,20 +30,31 @@
 
         if (validate($name, $email, $examDate, $subject, $grade)) {
             echo "<p class='alert alert-success'>Die eingegebenen Daten sind in Ordnung!<p>";
-        }else{
-            echo "<p class='alert alert-danger'>Die eingegebenen Daten sind fehlerhaft!<p>";
+        }else {
+            echo "<p class='alert alert-danger'>Die eingegebenen Daten sind fehlerhaft!</p>";
+            if (!empty($errors)) {
+                echo "<ul>";
+                foreach ($errors as $key => $value) {
+                    echo "<li>" . htmlspecialchars($value) . "</li>";
+                }
+                echo "</ul>";
+            }
         }
-    }
+
+        }
 
     ?>
     <form id="form_grade" action="index.php" method="post">
         <div class="row">
             <div class="col-sm-6 form-group">
                 <label for="name">Name*</label>
-                <input type="text" name="name" class="form-control"
-                maxlength="20"
+                <input type="text"
+                       name="name"
+                       class="form-control <?= isset($errors['name']) ? 'is-invalid' : '' ?>"
                        value="<?= htmlspecialchars($name) ?>"
-                required>
+                       maxlength="20"
+                       required
+                />
             </div>
 
             <div class="col-sm-6 form-group">
