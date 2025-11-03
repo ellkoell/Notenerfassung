@@ -52,7 +52,7 @@ class GradeEntry
             & $this->validateSubject($this->subject);
     }
 
-    function validateName()
+    private function validateName()
     {
 
         if ($this->strlen(name) == 0) {
@@ -65,7 +65,7 @@ class GradeEntry
         }
     }
 
-    function validateexamDate()
+    private function validateexamDate()
     {
         try {
             if ($this->examDate == "") {
@@ -85,7 +85,7 @@ class GradeEntry
 
     }
 
-    function validateSubject()
+    private function validateSubject()
     {
         if ($this->subject != 'm' && $this->subject != 'e' && $this->subject != 'd') {
             $errors['subject'] = "Fach ungültig";
@@ -95,7 +95,7 @@ class GradeEntry
         }
     }
 
-    function validateexamGrade()
+    private function validateexamGrade()
     {
         if (!is_numeric($this->grade) || $this->grade > 5) {
             $this->errors['grade'] = "Note ungültig";
@@ -105,7 +105,7 @@ class GradeEntry
         }
     }
 
-    function validateEmail()
+    private function validateEmail()
     {
         if ($this->email != "" && !filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
             $this->errors['email'] = "Email ungültig";
@@ -115,8 +115,25 @@ class GradeEntry
         }
     }
 
+    public function getExamDateFormatted()
+    {
+        return date_format(date_create($this->examDate), "d.m.Y");
+    }
 
+    public function getSubjectFormatted()
+    {
+        switch ($this->subject) {
+            case 'm':
+                return "Mathematik";
+            case 'd':
+                return "Deutsch";
+            case 'e':
+                return "Englisch";
+            default:
+                return null;
 
+        }
+    }
 
     /**
      * @return mixed
@@ -206,6 +223,9 @@ class GradeEntry
         return $this->errors;
     }
 
-
+    public function hasErrors($field)
+    {
+        return isset($this->errors[$field]);
+    }
 
 }
