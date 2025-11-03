@@ -4,44 +4,60 @@ namespace models;
 
 class GradeEntry
 {
-private $name;
-private $email;
-private $examDate;
-private $subject;
-private $grade = '';
-private $errors= [];
+    private $name;
+    private $email;
+    private $examDate;
+    private $subject;
+    private $grade = '';
+    private $errors = [];
 
-public function __construct(){
+    public function __construct()
+    {
 
-}
-public function getAll()
-{
+    }
 
-}
+    public function getAll()
+    {
+        $grades = [];
 
-public function deleteAll()
-{
+        if (isset($_SESSION['grades'])) {
+            foreach ($_SESSION['grades'] as $g) {
+                $grades[] = unserialize($g);
+            }
+        }
+        return $grades;
+    }
 
-}
-public function save()
-{if ($this -> validate()){
-    return true;
+    public function deleteAll()
+    {
+        if (isset($_SESSION['grades'])) {
+            unset($_SESSION['grades']);
+        }
+    }
 
-}
-return false;
-}
+    public function save()
+    {
+        if ($this->validate()) {
+
+            $s = serialize($this);
+            $_SESSION['grades'] = $s;
+            return true;
+        }
+        return false;
+    }
 
     function validate()
     {
         return $this->validateName($this->name) & $this->validateEmail($this->email) & $this->validateexamDate($this->examDate) & $this->validateexamGrade($this->grade)
-            &$this->validateSubject($this->subject);
+            & $this->validateSubject($this->subject);
     }
 
-    function validateName() {
+    function validateName()
+    {
 
-        if ($this -> strlen(name)==0){
+        if ($this->strlen(name) == 0) {
             $errors['name'] = "Name darf nicht leer sein";
-        }else if (strlen($this ->name) > 20){
+        } else if (strlen($this->name) > 20) {
             $errors[] = "Name zu lang";
             return false;
         } else {
@@ -49,18 +65,19 @@ return false;
         }
     }
 
-    function validateexamDate() {
+    function validateexamDate()
+    {
         try {
-            if ($this->examDate==""){
+            if ($this->examDate == "") {
                 $errors['examDate'] = "Prüfungsdatum darf nicht leer sein";
                 return false;
-               }else if (new DateTime($examDate) > new DateTime()){
+            } else if (new DateTime(examDate) > new DateTime()) {
                 $errors['examDate'] = "Prüfungsdatum darf nicht in der Zukunft liegen";
                 return false;
             } else {
                 return true;
             }
-        } catch (Exception $e){
+        } catch (Exception $e) {
             $errors['examDate'] = "Prüfungsdatum ungültig";
             return false;
         }
@@ -68,17 +85,19 @@ return false;
 
     }
 
-    function validateSubject() {
-        if ($this->subject !='m' && $this->subject!='e' && $this->subject !='d'){
+    function validateSubject()
+    {
+        if ($this->subject != 'm' && $this->subject != 'e' && $this->subject != 'd') {
             $errors['subject'] = "Fach ungültig";
             return false;
-        }else {
+        } else {
             return true;
         }
     }
 
-    function validateexamGrade() {
-        if (!is_numeric($this->grade)|| $this->grade >5){
+    function validateexamGrade()
+    {
+        if (!is_numeric($this->grade) || $this->grade > 5) {
             $this->errors['grade'] = "Note ungültig";
             return false;
         } else {
@@ -86,14 +105,19 @@ return false;
         }
     }
 
-    function validateEmail() {
-        if ($this->email != "" && !filter_var($this->email, FILTER_VALIDATE_EMAIL)){
+    function validateEmail()
+    {
+        if ($this->email != "" && !filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
             $this->errors['email'] = "Email ungültig";
             return false;
         } else {
             return true;
         }
     }
+
+
+
+
     /**
      * @return mixed
      */
@@ -182,11 +206,6 @@ return false;
         return $this->errors;
     }
 
-    /**
-     * @param array $errors
-     */
-    public function setErrors($errors)
-    {
-        $this->errors = $errors;
-    }
+
+
 }
