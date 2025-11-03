@@ -1,10 +1,13 @@
 <!doctype html>
 <html lang="de">
 <head>
+    <!--Client und Serverseitige Validierung, clientseitige deshalb, weil schon vor abschicken geprüft wird, und dann
+      bessere usability-->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
     <title>Notenerfassung</title>
 </head>
 <body>
@@ -26,7 +29,7 @@
         $email = isset($_POST['email']) ? $_POST['email'] : '';
         $examDate = isset($_POST['examDate']) ? $_POST['examDate'] : '';
         $grade = isset($_POST['grade']) ? $_POST['grade'] : '';
-        $subject = isset($_POST['subject']) ? $_POST['subject'] : '';
+        $subject = isset($_POST['subject']) ? $_POST['subject'] : ''; //$_Post ist das array in dem alle formulardaten gespeichert werden
 
         if (validate($name, $email, $examDate, $subject, $grade)) {
             echo "<p class='alert alert-success'>Die eingegebenen Daten sind in Ordnung!<p>";
@@ -49,20 +52,37 @@
             <div class="col-sm-6 form-group">
                 <label for="name">Name*</label>
                 <input type="text"
+                       id="name"
                        name="name"
                        class="form-control <?= isset($errors['name']) ? 'is-invalid' : '' ?>"
                        value="<?= htmlspecialchars($name) ?>"
                        maxlength="20"
                        required
                 />
+                <?php if (isset($errors['name'])): ?>
+                    <div class="invalid-feedback">
+                        <?= htmlspecialchars($errors['name']) ?>
+                    </div>
+                <?php endif; ?>
             </div>
+
 
             <div class="col-sm-6 form-group">
                 <label for="email">Email</label>
-                <input type="email" name="email" class="form-control"
-                <?= isset($errors['email']) ? 'is-invalid' : '' ?>"
-                       value="<?= htmlspecialchars($email) ?>">
+                <input type="email"
+                       id="email"
+                       name="email"
+                       class="form-control <?= isset($errors['email']) ? 'is-invalid' : '' ?>"
+                       value="<?= htmlspecialchars($email) ?>"
+                />
+                <?php if (isset($errors['email'])): ?>
+                    <div class="invalid-feedback">
+                        <?= htmlspecialchars($errors['email']) ?>
+                    </div>
+                <?php endif; ?>
             </div>
+
+
         </div>
 
         <div class="row">
@@ -84,7 +104,7 @@
                 <label for="grade">Note*</label>
                 <input type="number" name="grade" class="form-control" min="1" max="5"
                 <?= isset($errors['grade']) ? 'is-invalid' : '' ?>"
-                       value="<?= htmlspecialchars($grade) ?>"/>
+                       value="<?= htmlspecialchars($grade) ?>"required/>
             </div>
 
             <div class="col-sm-4 form-group">
