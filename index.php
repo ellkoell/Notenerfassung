@@ -1,56 +1,46 @@
 <?php
-
 session_start();
 require_once "models/GradeEntry.php";
 
 $e = new \models\GradeEntry();
 $message = '';
 
-if (isset($_POST['submit'])){
-
-
-
+// Daten aus POST übernehmen
+if (isset($_POST['submit'])) {
     $e->setName(isset($_POST['name']) ? $_POST['name'] : "");
     $e->setEmail(isset($_POST['email']) ? $_POST['email'] : "");
     $e->setExamDate(isset($_POST['examDate']) ? $_POST['examDate'] : "");
     $e->setGrade(isset($_POST['grade']) ? $_POST['grade'] : "");
-    $e->setSubject(isset($_POST['subject']) ? $_POST['subject'] : "");  //$_Post ist das array in dem alle formulardaten gespeichert werden
+    $e->setSubject(isset($_POST['subject']) ? $_POST['subject'] : "");
 
     if ($e->validate()) {
         $e->save();
-        $message= "<p class='alert alert-success'>Die eingegebenen Daten sind in Ordnung!<p>";
-    }else {
+        $message = "<p class='alert alert-success'>Die eingegebenen Daten sind in Ordnung!</p>";
+    } else {
         $message = "<div class='alert alert-danger'><p>Die eingegebenen Daten sind fehlerhaft!</p><ul>";
-        foreach ($e->getErrors() as $key => $value){
-            $message.="<li>". $value . "</li>";
+        foreach ($e->getErrors() as $key => $value) {
+            $message .= "<li>" . htmlspecialchars($value) . "</li>";
         }
-     $message.="</ul></div>";
-        }
-
-
+        $message .= "</ul></div>";
+    }
 }
 
-
 ?>
-
 
 <!doctype html>
 <html lang="de">
 <head>
-    <!--Client und Serverseitige Validierung, clientseitige deshalb, weil schon vor abschicken geprüft wird, und dann
-      bessere usability-->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-
-    <title>Notenerfassung</title>
+    <title>Notenerfassung 2.0</title>
 </head>
 <body>
 <div class="container">
-    <h1 class="mt-5 mb-3">Notenerfassung</h1>
+    <h1 class="mt-5 mb-3">Notenerfassung 2.0</h1>
 
-
+    <?= $message ?>
 
     <form id="form_grade" action="index.php" method="post">
         <div class="row">
@@ -59,65 +49,82 @@ if (isset($_POST['submit'])){
                 <input type="text"
                        id="name"
                        name="name"
-                       class="form-control <?= isset($errors['name']) ? 'is-invalid' : '' ?>"
-                       value="<?= htmlspecialchars($name) ?>"
+                       class="form-control <?= $e->hasErrors('name') ? 'is-invalid' : '' ?>"
+                       value="<?= htmlspecialchars($e->getName()) ?>"
                        maxlength="20"
                        required
                 />
-                <?php if (isset($errors['name'])): ?>
+                <?php if ($e->hasErrors('name')): ?>
                     <div class="invalid-feedback">
-                        <?= htmlspecialchars($errors['name']) ?>
+                        <?= htmlspecialchars($e->getErrors()['name']) ?>
                     </div>
                 <?php endif; ?>
             </div>
-
 
             <div class="col-sm-6 form-group">
                 <label for="email">Email</label>
                 <input type="email"
                        id="email"
                        name="email"
-                       class="form-control <?= isset($errors['email']) ? 'is-invalid' : '' ?>"
-                       value="<?= htmlspecialchars($email) ?>"
+                       class="form-control <?= $e->hasErrors('email') ? 'is-invalid' : '' ?>"
+                       value="<?= htmlspecialchars($e->getEmail()) ?>"
+                       maxlength="50"
+                       required
                 />
-                <?php if (isset($errors['email'])): ?>
+                <?php if ($e->hasErrors('email')): ?>
                     <div class="invalid-feedback">
-                        <?= htmlspecialchars($errors['email']) ?>
+                        <?= htmlspecialchars($e->getErrors()['email']) ?>
                     </div>
                 <?php endif; ?>
             </div>
-
-
         </div>
 
         <div class="row">
             <div class="col-sm-4 form-group">
                 <label for="subject">Fach*</label>
-                <select name="subject" class="form-select"
-                <?= isset($errors['subject']) ? 'is-invalid' : '' ?>"
-                required>
+                <select name="subject"
+                        class="form-control <?= $e->hasErrors('subject') ? 'is-invalid' : '' ?>"
+                        required>
                     <option value="" hidden>-Fach auswählen-</option>
-                    <option value="m" <?= $subject == 'm' ? 'selected' : '' ?>>Mathematik</option>
-                    <option value="d" <?= $subject == 'd' ? 'selected' : '' ?>>Deutsch</option>
-                    <option value="e" <?= $subject == 'e' ? 'selected' : '' ?>>Englisch</option>
-
-
+                    <option value="m" <?= $e->getSubject() == 'm' ? "selected" : "" ?>>Mathematik</option>
+                    <option value="d" <?= $e->getSubject() == 'd' ? "selected" : "" ?>>Deutsch</option>
+                    <option value="e" <?= $e->getSubject() == 'e' ? "selected" : "" ?>>Englisch</option>
                 </select>
+                <?php if ($e->hasErrors('subject')): ?>
+                    <div class="invalid-feedback">
+                        <?= htmlspecialchars($e->getErrors()['subject']) ?>
+                    </div>
+                <?php endif; ?>
             </div>
 
             <div class="col-sm-4 form-group">
                 <label for="grade">Note*</label>
-                <input type="number" name="grade" class="form-control" min="1" max="5"
-                <?= isset($errors['grade']) ? 'is-invalid' : '' ?>"
-                       value="<?= htmlspecialchars($grade) ?>"required/>
+                <input type="number"
+                       name="grade"
+                       class="form-control <?= $e->hasErrors('grade') ? 'is-invalid' : '' ?>"
+                       min="1" max="5"
+                       value="<?= htmlspecialchars($e->getGrade()) ?>"
+                       required/>
+                <?php if ($e->hasErrors('grade')): ?>
+                    <div class="invalid-feedback">
+                        <?= htmlspecialchars($e->getErrors()['grade']) ?>
+                    </div>
+                <?php endif; ?>
             </div>
 
             <div class="col-sm-4 form-group">
                 <label for="examDate">Prüfungsdatum</label>
-                <input type="date" name="examDate"
-                <?= isset($errors['examDate']) ? 'is-invalid' : '' ?>"
-                       value="<?= htmlspecialchars($examDate) ?>"class="form-control" required
-                onchange="validateExamDate(this)"/>
+                <input type="date"
+                       name="examDate"
+                       class="form-control <?= $e->hasErrors('examDate') ? 'is-invalid' : '' ?>"
+                       value="<?= htmlspecialchars($e->getExamDate()) ?>"
+                       required
+                />
+                <?php if ($e->hasErrors('examDate')): ?>
+                    <div class="invalid-feedback">
+                        <?= htmlspecialchars($e->getErrors()['examDate']) ?>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -125,12 +132,27 @@ if (isset($_POST['submit'])){
             <div class="col-sm-3 mb-3">
                 <input type="submit" name="submit" class="btn btn-primary w-100" value="Validieren">
             </div>
-
             <div class="col-sm-3">
                 <a href="index.php" class="btn btn-secondary btn-block w-100">Löschen</a>
             </div>
         </div>
     </form>
+
+    <!-- Optional: Anzeige aller gespeicherten Einträge -->
+    <div class="mt-5">
+        <h2>Gespeicherte Einträge</h2>
+        <ul>
+            <?php foreach ($e->getAll() as $entry): ?>
+                <li>
+                    <?= htmlspecialchars($entry->getName()) ?>,
+                    <?= htmlspecialchars($entry->getSubjectFormatted()) ?>,
+                    <?= htmlspecialchars($entry->getGrade()) ?>,
+                    <?= htmlspecialchars($entry->getExamDateFormatted()) ?>,
+                    <?= htmlspecialchars($entry->getEmail()) ?>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
 </div>
 <script src="js/index.js"></script>
 </body>
