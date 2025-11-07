@@ -1,3 +1,39 @@
+<?php
+
+session_start();
+require_once "models/GradeEntry.php";
+
+$e = new \models\GradeEntry();
+$message = '';
+
+if (isset($_POST['submit'])){
+
+
+
+    $e->setName(isset($_POST['name']) ? $_POST['name'] : "");
+    $e->setEmail(isset($_POST['email']) ? $_POST['email'] : "");
+    $e->setExamDate(isset($_POST['examDate']) ? $_POST['examDate'] : "");
+    $e->setGrade(isset($_POST['grade']) ? $_POST['grade'] : "");
+    $e->setSubject(isset($_POST['subject']) ? $_POST['subject'] : "");  //$_Post ist das array in dem alle formulardaten gespeichert werden
+
+    if ($e->validate()) {
+        $e->save();
+        $message= "<p class='alert alert-success'>Die eingegebenen Daten sind in Ordnung!<p>";
+    }else {
+        $message = "<div class='alert alert-danger'><p>Die eingegebenen Daten sind fehlerhaft!</p><ul>";
+        foreach ($e->getErrors() as $key => $value){
+            $message.="<li>". $value . "</li>";
+        }
+     $message.="</ul></div>";
+        }
+
+
+}
+
+
+?>
+
+
 <!doctype html>
 <html lang="de">
 <head>
@@ -13,40 +49,9 @@
 <body>
 <div class="container">
     <h1 class="mt-5 mb-3">Notenerfassung</h1>
-    <?php
-    require "lib/func.php";
 
-    $name = '';
-    $email = '';
-    $examDate= '';
-    $grade = '';
-    $subject = '';
 
-   // print_r($_POST);
 
-    if (isset($_POST['submit'])){
-        $name = isset($_POST['name']) ? $_POST['name'] : '';
-        $email = isset($_POST['email']) ? $_POST['email'] : '';
-        $examDate = isset($_POST['examDate']) ? $_POST['examDate'] : '';
-        $grade = isset($_POST['grade']) ? $_POST['grade'] : '';
-        $subject = isset($_POST['subject']) ? $_POST['subject'] : ''; //$_Post ist das array in dem alle formulardaten gespeichert werden
-
-        if (validate($name, $email, $examDate, $subject, $grade)) {
-            echo "<p class='alert alert-success'>Die eingegebenen Daten sind in Ordnung!<p>";
-        }else {
-            echo "<p class='alert alert-danger'>Die eingegebenen Daten sind fehlerhaft!</p>";
-            if (!empty($errors)) {
-                echo "<ul>";
-                foreach ($errors as $key => $value) {
-                    echo "<li>" . htmlspecialchars($value) . "</li>";
-                }
-                echo "</ul>";
-            }
-        }
-
-        }
-
-    ?>
     <form id="form_grade" action="index.php" method="post">
         <div class="row">
             <div class="col-sm-6 form-group">
