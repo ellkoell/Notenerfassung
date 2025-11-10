@@ -179,7 +179,7 @@ if (isset($_POST['submit'])) {
     </div>
 
 <form action="clear.php" method="post">
-    <input type="submit" name="clear" class="btn-btn-danger" value="Alle Noten löschen"/>
+    <input type="submit" name="clear" class="btn btn-danger" value="Alle Noten löschen"/>
 
 
 </form>

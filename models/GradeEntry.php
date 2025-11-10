@@ -17,13 +17,16 @@ class GradeEntry
     public static function getAll()
     {
         $grades = [];
+
         if (isset($_SESSION['grades'])) {
             foreach ($_SESSION['grades'] as $g) {
                 $grades[] = unserialize($g);
             }
         }
+
         return $grades;
     }
+
 
     public static function deleteAll()
     {
