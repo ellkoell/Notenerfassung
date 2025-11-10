@@ -14,7 +14,7 @@ class GradeEntry
     private $grade = '';
     private $errors = [];
 
-    public function getAll()
+    public static function getAll()
     {
         $grades = [];
         if (isset($_SESSION['grades'])) {
@@ -25,7 +25,7 @@ class GradeEntry
         return $grades;
     }
 
-    public function deleteAll()
+    public static function deleteAll()
     {
         if (isset($_SESSION['grades'])) {
             unset($_SESSION['grades']);

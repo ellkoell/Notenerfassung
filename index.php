@@ -138,21 +138,51 @@ if (isset($_POST['submit'])) {
         </div>
     </form>
 
-    <!-- Optional: Anzeige aller gespeicherten Einträge -->
-    <div class="mt-5">
-        <h2>Gespeicherte Einträge</h2>
-        <ul>
-            <?php foreach ($e->getAll() as $entry): ?>
-                <li>
-                    <?= htmlspecialchars($entry->getName()) ?>,
-                    <?= htmlspecialchars($entry->getSubjectFormatted()) ?>,
-                    <?= htmlspecialchars($entry->getGrade()) ?>,
-                    <?= htmlspecialchars($entry->getExamDateFormatted()) ?>,
-                    <?= htmlspecialchars($entry->getEmail()) ?>
-                </li>
-            <?php endforeach; ?>
-        </ul>
+
+    <h2 class="mt-3">Noten</h2>
+    <div id="grades">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>E-Mail</th>
+                <th>Prüfungsdatum</th>
+                <th>Fach</th>
+                <th>Note</th>
+            </tr>
+
+            </thead>
+            <tbody>
+            <?php
+
+
+            $grades = \models\GradeEntry::getAll();
+
+
+            foreach ($grades as $g) {
+                echo "<tr>";
+                echo "<td>" . $g->getName() . "</td>";
+                echo "<td>" . $g->getEmail() . "</td>";
+                echo "<td>" . $g->getExamDateFormatted() . "</td>";
+                echo "<td>" . $g->getSubjectFormatted() . "</td>";
+                echo "<td>" . $g->getGrade() . "</td>";
+                echo "</tr>";
+            }
+            ?>
+
+
+            </tbody>
+
+        </table>
+
+
     </div>
+
+<form action="clear.php" method="post">
+    <input type="submit" name="clear" class="btn-btn-danger" value="Alle Noten löschen"/>
+
+
+</form>
 </div>
 <script src="js/index.js"></script>
 </body>
